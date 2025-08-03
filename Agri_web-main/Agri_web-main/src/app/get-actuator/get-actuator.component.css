@@ -1,0 +1,152 @@
+.header {
+    display: flex;
+    justify-content: flex-end; /* Aligne le bouton à droite */
+    margin-bottom: 20px;
+  }
+  
+  .add-device-btn {
+    display: flex;
+    align-items: center; /* Aligne l'icône et le texte verticalement */
+    gap: 5px; /* Ajoute un petit espace entre l'icône et le "+" */
+    font-size: 25px;
+    font-weight: bold;
+  }
+  
+  .sensor-count.clickable {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  
+  .plus-icon {
+    
+    font-size: 14px; /* Rend le "+" bien visible */
+    line-height: 1;
+  }
+  
+  /* Style général des icônes */
+  .icon {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  /* Icône de configuration */
+  .config-icon i {
+    color: #007bff; /* Bleu */
+  }
+  
+  .warning-icon {
+    color: #dc3545 !important; /* Rouge si configuration manquante */
+  }
+  
+  /* Icône "Voir" */
+  .view-icon i {
+    color: #28a745; /* Vert */
+  }
+  
+  /* Icône "Supprimer" */
+  .delete-icon i {
+    color: #dc3545; /* Rouge */
+  }
+  
+  .icon:hover i {
+    color: #000; /* Changement de couleur au survol */
+  }
+  
+  /* Style des capteurs sous forme de badge */
+  .sensor-badge {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 3px 8px;
+    font-size: 14px;
+    margin-right: 5px;
+    display: inline-block;
+    border: 1px solid #ccc;
+  }
+  
+  /* Centrer le texte dans les cellules */
+  .table {
+    text-align: center;
+  }
+  
+  /* Centrer les icônes */
+  .table td, .table th {
+    vertical-align: middle;
+    text-align: center;
+  }
+  
+  /* Centrer les badges des capteurs */
+  .sensor-badge {
+    display: inline-block;
+    text-align: center;
+  }
+
+  .command-icon i {
+    color: #3d49d4; /* Rouge */
+  }
+
+  ul li.sensor-count.clickable:hover {
+    background-color: #000;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;   /* Taille réduite */
+    height: 20px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px; /* Pour les coins arrondis */
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;  /* Cercle ajusté à la hauteur du switch */
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%; /* Cercle parfait */
+  }
+  
+  input:checked + .slider {
+    background-color: #e2d924;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #e2d924;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px); /* 40px (total width) - 16px (circle size) - 4px (margins) */
+  }
+  
+
+/* couleur si valeur incertaine (en attente) */
+.switch.pending .slider.round {
+  background-color: orange !important;
+}
+

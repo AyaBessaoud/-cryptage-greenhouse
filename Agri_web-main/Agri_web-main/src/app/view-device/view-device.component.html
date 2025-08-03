@@ -1,0 +1,170 @@
+<div class="main-content">
+    <div class="container-fluid">
+      <div >
+  
+        <!-- Bouton Retour -->
+        <div class="header mb-3">
+          <button routerLink="/devices" routerLinkActive="active" class="btn btn-outline-success btn-rounded">
+            <i class="material-icons">arrow_back</i>
+          </button>
+        </div>
+  
+        <!-- Formulaire d'ajout -->
+        <div class="card mb-4">
+          <div class="card-header card-header-danger"> 
+            <h4 class="card-title">Consultation des informations de {{device.codDevice}}</h4>
+          </div>
+  
+          <div class="card-body">
+            <form #deviceForm="ngForm" id="regForm">
+  
+              <!-- Nom de l'appareil -->
+              <div class="form-group mb-3">
+                <label for="codDevice" class="form-label">Nom de l'appareil</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">devices</i></span>
+                  <input type="text" [readonly]="readOnlyMode" id="codDevice" name="codDevice" class="form-control" [(ngModel)]="device.codDevice" placeholder="Entrez le nom de l'appareil..." required>
+                </div>
+              </div>
+
+              <div class="row">
+              <!----Select pour la ferme-->
+              <div class="col-md-6 mb-3">
+                <label>Ferme</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">grass</i></span>
+                  <select name="ferme" class="form-control" [(ngModel)]="selectedFarm" [disabled]="readOnlyMode"
+                    [compareWith]="compareDevices">
+                   <option [ngValue]="null">Aucune ferme</option> 
+                    <option *ngFor="let ferme of ListFarms" [ngValue]="ferme">{{ ferme.description }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Select pour les serres -->
+              <div class="col-md-6 mb-3">
+                <label>Serre</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">gite</i></span>
+                  <select name="serre" class="form-control" [compareWith]="compareDevices" [disabled]="readOnlyMode"
+                   [(ngModel)]="device.serre">
+                    <option [ngValue]="null">Aucune serre</option>
+                    <option *ngFor="let serre of selectedFarm?.serres" [ngValue]="serre">{{ serre.description }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+              <!-- Titre section paramètres -->
+              <h5 class="section-title">Liste des capteurs</h5>
+
+              <!-- Liste des actionneurs après sélection d'un appareil -->
+               <div *ngIf="device.sensors?.length > 0; else noSensors" class="form-group mb-3">
+                  <div class="sensor-selection2">
+                    <div 
+                      *ngFor="let sensor of device.sensors" 
+                      class="actuator-card">
+                      
+                      <div class="actuator-icon">
+                        <i class="material-icons">{{ getSensorIcon(sensor.typeSensor) }}</i>
+                      </div>
+                      
+                      <div class="sensor-info">
+                        <span>{{ getSensorType(sensor.typeSensor) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+
+                <ng-template #noSensors>
+                    <div class="text-muted fst-italic mt-2"  style="padding-bottom: 0.5cm;">Aucun capteur disponible</div>
+
+                  </ng-template>
+
+              <!-- Titre section actionneur -->
+              <h5 class="section-title">Liste des actionneurs</h5>
+
+              <!-- Liste des actionneurs après sélection d'un appareil -->
+               <div *ngIf="device.localActuators?.length > 0; else noActuators" class="form-group mb-3">
+                  <div class="sensor-selection2">
+                    <div 
+                      *ngFor="let actuator of device.localActuators" 
+                      class="actuator-card">
+                      
+                      <div class="actuator-icon">
+                        <i [class]="getActuatorIcon(actuator.output)"></i>
+                      </div>
+                      
+                      <div class="sensor-info">
+                        <span>{{ actuator.output }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+
+                <ng-template #noActuators>
+                    <div class="text-muted fst-italic mt-2" style="padding-bottom: 0.5cm;">Aucun actionneur disponible</div>
+                  </ng-template>
+  
+              <!-- Titre section paramètres -->
+              <h5 class="section-title">Paramètres de configuration de l'appareil</h5>
+  
+              <div class="row">
+                <!-- Fréquence capteurs -->
+                <div class="col-md-6 mb-3">
+                  <label>Fréquence de transmission des capteurs</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="material-icons">schedule</i></span>
+                    <select name="device.config.PS" [disabled]="readOnlyMode" class="form-control" [(ngModel)]="device.config.ps" required>
+                      <option value="" disabled selected>Choisir une fréquence...</option>
+                      <option *ngFor="let freq of [1, 5, 10, 15, 30, 45, 60]" [value]="freq">{{ freq }} min</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <!-- Fréquence actionneurs -->
+                <div class="col-md-6 mb-3">
+                  <label>Fréquence de transmission des actionneurs</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="material-icons">schedule</i></span>
+                    <select name="device.config.PA" [disabled]="readOnlyMode" class="form-control" [(ngModel)]="device.config.pa" required>
+                      <option value="" disabled selected>Choisir une fréquence...</option>
+                      <option *ngFor="let freq of [1, 5, 10, 15, 30, 45, 60]" [value]="freq">{{ freq }} min</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <!-- Coordonnée Longitude -->
+                <div class="col-md-6 mb-3">
+                  <label>Coordonnée longitudinale</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="material-icons">location_on</i></span>
+                    <input type="number" [readonly]="readOnlyMode" name="device.config.longt" class="form-control" [(ngModel)]="device.config.longt" required>
+                  </div>
+                </div>
+  
+                <!-- Coordonnée Latitude -->
+                <div class="col-md-6 mb-3">
+                  <label>Coordonnée de latitude</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="material-icons">location_on</i></span>
+                    <input [readonly]="readOnlyMode" type="number" name="device.config.lat" class="form-control" [(ngModel)]="device.config.lat" required>
+                  </div>
+                </div>
+              </div>
+  
+            </form>
+          </div>
+        </div>
+  
+        <!-- Carte de sélection -->
+        <div class="map-container mt-5">
+          <h5>Sélectionnez une position sur la carte :</h5>
+          <div id="device-map"></div>
+          <p class="mt-2">Latitude : {{ device.config.lat }} | Longitude : {{ device.config.longt }}</p>
+        </div>
+      </div>
+    </div>
+  </div>

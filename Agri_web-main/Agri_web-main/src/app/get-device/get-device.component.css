@@ -1,0 +1,219 @@
+.header {
+  display: flex;
+  justify-content: flex-end; /* Aligne le bouton à droite */
+  margin-bottom: 20px;
+}
+
+.add-device-btn {
+  display: flex;
+  align-items: center; /* Aligne l'icône et le texte verticalement */
+  gap: 5px; /* Ajoute un petit espace entre l'icône et le "+" */
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.sensor-count.clickable {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+.plus-icon {
+  
+  font-size: 14px; /* Rend le "+" bien visible */
+  line-height: 1;
+}
+
+/* Style général des icônes */
+.icon {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Icône de configuration */
+.config-icon i {
+  color: #007bff; /* Bleu */
+}
+
+.warning-icon {
+  color: #dc3545 !important; /* Rouge si configuration manquante */
+}
+
+/* Icône "Voir" */
+.view-icon i {
+  color: #28a745; /* Vert */
+}
+
+/* Icône "Supprimer" */
+.delete-icon i {
+  color: #dc3545; /* Rouge */
+}
+
+.command-icon i {
+  color: #3d49d4; /* Rouge */
+}
+
+.icon:hover i {
+  color: #000; /* Changement de couleur au survol */
+}
+
+/* Centrer le texte dans les cellules */
+.table {
+  text-align: center;
+}
+
+/* Centrer les icônes */
+.table td, .table th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+
+/* css pour les modal */
+/* Style général des modals */
+#commandModal .modal-content,
+#sensorModal .modal-content,
+#actuatorModal .modal-content {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header des modals */
+#commandModal .modal-header,
+#sensorModal .modal-header,
+#actuatorModal .modal-header,
+#logModal .modal-header{
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  background-color: #f8f9fa;
+}
+
+#commandModal .modal-title,
+#sensorModal .modal-title,
+#actuatorModal .modal-title,
+#logModal .modal-title {
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #1d1dcd !important;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sensorModal .modal-title .material-icons,
+#actuatorModal .modal-title .material-icons {
+  font-size: 1.5rem;
+  color: inherit; /* Reprend la couleur du parent */
+}
+
+/* Body des modals */
+#commandModal .modal-body,
+#sensorModal .modal-body,
+#actuatorModal .modal-body {
+  padding: 1.5rem;
+}
+
+/* Style des listes */
+#commandModal ul,
+#sensorModal ul,
+#actuatorModal ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style des éléments de liste */
+#commandModal li.sensor-count.clickable,
+#sensorModal ul li,
+#actuatorModal ul li {
+  padding: 12px 16px;
+  margin: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #444;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+#commandModal li.sensor-count.clickable:hover,
+#sensorModal ul li:hover,
+#actuatorModal ul li:hover {
+  background-color: #f0f5ff;
+  border-color: #1d1dcd;
+  transform: translateX(5px);
+  color: #1d1dcd;
+  box-shadow: 0 2px 8px rgba(29, 29, 205, 0.1);
+}
+
+/* Style pour les messages "Aucun... disponible" */
+#commandModal .nocmd p,
+#sensorModal .noSensors p,
+#actuatorModal .noAct p {
+  color: #666;
+  font-style: italic;
+  padding: 15px 0;
+  text-align: center;
+  margin: 0;
+}
+
+/* Bouton de fermeture */
+#commandModal .close,
+#sensorModal .close,
+#actuatorModal .close {
+  font-size: 1.5rem;
+  color: #999;
+  transition: all 0.3s ease;
+  position: absolute;
+  right: 1.5rem;
+  top: 1.2rem;
+}
+
+#commandModal .close:hover,
+#sensorModal .close:hover,
+#actuatorModal .close:hover {
+  color: #1d1dcd;
+  transform: scale(1.1);
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+  #commandModal .modal-dialog,
+  #sensorModal .modal-dialog,
+  #actuatorModal .modal-dialog {
+    margin: 10px;
+  }
+  
+  #commandModal .modal-header,
+  #sensorModal .modal-header,
+  #actuatorModal .modal-header {
+    padding: 1rem;
+  }
+  
+  #commandModal .modal-body,
+  #sensorModal .modal-body,
+  #actuatorModal .modal-body {
+    padding: 1rem;
+  }
+  
+  #commandModal li.sensor-count.clickable,
+  #sensorModal ul li,
+  #actuatorModal ul li {
+    padding: 10px 14px;
+  }
+}
+
+/* css pour la pagination*/
+::ng-deep pagination-controls .ngx-pagination {
+  margin: 0;
+}

@@ -1,0 +1,40 @@
+
+<div class="login-container">
+    <div class="login-box">
+      <h2>Se connecter</h2>
+      <form #auth="ngForm" id="form" class="login-form" (ngSubmit)="Submit(auth.value)">
+        <div *ngIf="showMessage" class="alert alert-danger custom-alert" role="alert">
+          Vérifiez votre email et votre mot de passe 
+        </div>
+        <div class="form-group">
+          <label for="username">Email</label>
+<input 
+  type="email" 
+  #email="ngModel" 
+  name="email" 
+  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}" 
+  ngModel 
+  required 
+  placeholder="Entrez votre email" />
+          <div *ngIf="email.touched && email.invalid">
+            <small style="color: red; font-weight: 300;" *ngIf="email.errors?.['required']">Requis </small>
+            <small style="color: red; font-weight: 300;" *ngIf="email.errors?.['pattern']">Adresse email invalide</small>
+        </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" name="password" #password="ngModel" ngModel required placeholder="Entez votre mot de passe" />
+          <div *ngIf="password.touched && password.invalid">
+            <small style="color: red; font-weight: 300;" *ngIf="password.errors?.['required']">Requis </small>
+        </div>
+        </div>
+        <!--<div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" name="remember-me" /> Remember me
+          </label>
+          <a class="forgot-password">Mot de passe oublié</a>
+        </div>--->
+        <button  [disabled]="auth.invalid" type="submit" class="login-button">Se connecter</button>
+      </form>
+    </div>
+  </div>

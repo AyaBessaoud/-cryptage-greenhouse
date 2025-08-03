@@ -1,0 +1,256 @@
+.map-container {
+    margin-top: 30px;
+  }
+  
+  
+  /* Style général */
+  .header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+    
+    /* Style des inputs */
+    .form-control {
+      height: 45px;
+      border-radius: 8px;
+  
+    }
+    
+    .input-group-text {
+      background-color: #fffefe;
+      border-right: none;
+    }
+/* Plus petit et discret pour les actionneurs */
+  .actuator-card {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    background-color: #fafafa;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    font-size: 14px; /* taille de texte normale */
+    max-width: 300px;
+  }
+  
+  .actuator-card:hover {
+    background-color: #f0f0f0;
+    border-color: #b0e0b0;
+  }
+  
+  .actuator-card.selected {
+    background-color: #e6f9e6;
+    border-color: #66bb6a;
+  }
+  
+  .actuator-icon {
+    font-size: 18px;
+    margin-right: 10px;
+    color: #66bb6a;
+  }
+  
+  .selection-indicator {
+    margin-left: auto;
+    color: #4caf50;
+    font-size: 18px;
+  }
+  
+  .sensor-selection2 {
+    display: flex;
+    flex-direction: row; /* par défaut, mais on peut être explicite */
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+.selected-date .mat-calendar-body-cell-content {
+  background-color: #1976d2 !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+/* --- Améliorations pour les Checkboxes (organisation et style) --- */
+
+/* Conteneur des checkboxes pour une meilleure organisation */
+.d-flex.flex-wrap.gap-2.mb-3 {
+    align-items: center;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    padding-left: 0;
+    cursor: pointer;
+}
+
+.form-check-input {
+    /* Assure que les événements de souris sont reçus et que la checkbox est au-dessus */
+    pointer-events: auto !important; 
+    position: relative !important; 
+    z-index: 1; 
+
+    /* Taille et aspect de la checkbox */
+    width: 1.25em !important;
+    height: 1.25em !important;
+    margin-top: 0 !important;
+    margin-right: 0.5em !important;
+
+    /* REFORCER L'APPARITION VISUELLE DE LA CHECKBOX */
+    border: 1px solid #ced4da !important; /* Toujours une bordure visible */
+    border-radius: 0.25em !important;
+    background-color: #fff !important; /* Toujours un fond blanc par défaut */
+    box-shadow: none !important; /* Retirer toute ombre qui pourrait la masquer */
+    opacity: 1 !important; /* S'assurer qu'elle est opaque */
+    visibility: visible !important; /* S'assurer qu'elle est visible */
+    
+    /* Pour un style personnalisé, on retire l'apparence native */
+    appearance: none !important;
+    -webkit-appearance: none !important;
+
+    /* Utiliser flex pour centrer le contenu (la coche) si nécessaire */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Style de la checkbox quand elle est cochée */
+.form-check-input:checked {
+    background-color: #0a861b !important;
+    border-color: #036d23 !important;
+}
+
+/* Ajouter une icône de coche personnalisée */
+.form-check-input:checked::before {
+    content: '\2713'; /* Caractère Unicode pour une coche */
+    font-size: 0.8em;
+    color: white;
+    /* Assurez-vous que le ::before est bien positionné et visible */
+    display: block !important;
+    line-height: 1; /* Pour un meilleur alignement vertical de la coche */
+}
+
+/* Style au survol de la checkbox */
+.form-check-input:hover {
+    border-color: #0a9d56 !important;
+}
+
+.form-check-label {
+    display: inline-block !important;
+    vertical-align: middle; 
+    cursor: pointer;
+    color: #343a40;
+}
+
+/* Ajustements pour les form-check-inline si utilisés dans une grille */
+.days-of-month-grid .form-check-inline {
+    margin-right: 0;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* --- Style pour la grille des jours du mois (inchangé, mais renforcé par .form-check-inline display:flex) --- */
+.days-of-month-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+/* Style spécifique pour les radio buttons pour les rendre ronds */
+.form-check-input[type="radio"] {
+    border-radius: 50% !important; /* Rendre le radio button rond */
+}
+
+/* Style du radio button quand il est coché - COULEUR VERTE */
+.form-check-input[type="radio"]:checked {
+    background-color: #0a861b !important;
+    border-color: #036d23 !important;
+}
+
+/* Ajouter un point central pour les radio buttons */
+.form-check-input[type="radio"]:checked::before {
+    content: ''; /* Pas de caractère, mais un fond pour créer le point */
+    width: 0.6em; /* Taille du point central */
+    height: 0.6em;
+    border-radius: 50%;
+    background-color: white !important; /* Couleur du point central */
+    display: block !important;
+}
+
+/*switcher*/
+.switch {
+  position: relative;
+  display: block;               /* pour prendre toute la largeur */
+  width: 100%;                  /* toute la largeur de la page */
+  height: 30px;                 /* hauteur plus grande si besoin */
+  margin: 10px 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #e2d924;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #e2d924;
+}
+
+input:checked + .slider:before {
+  transform: translateX(calc(100% - 30px)); /* déplacement dynamique selon largeur */
+}
+
+.switch-container {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.switch-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 16px;
+}

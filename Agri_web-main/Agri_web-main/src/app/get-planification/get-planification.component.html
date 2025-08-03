@@ -1,0 +1,47 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-dm-8">
+      <div class="header mb-3">
+        <button routerLink="/planification/addPlanif" routerLinkActive="active" class="btn btn-outline-danger">
+          <i class="material-icons">calendar_month</i> 
+          <span class="plus-icon">+</span> <!-- Symbole "+" -->
+        </button>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Gestion des planifications</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead class="text-primary">
+                <tr>
+                  <th>Description</th>
+                  <th>Date de création</th>
+                  <th>Appareil final</th>
+                  <th>Actionneur</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let planif of ListPlanifs">
+                  <td>{{ planif.description }}</td>
+                  <td>{{ planif.creationDate  | date:'dd/MM/yyyy HH:mm'}}</td>
+                  <td>{{ planif.actuator?.device.codDevice}}</td>
+                  <td>{{ planif.actuator?.idU}}</td>
+                  <td>
+                    <span class="icon warning-icon" [routerLink]="['/planification/modifPlanif', planif.id]"
+                      routerLinkActive="active">
+                      <i class="material-icons">settings</i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

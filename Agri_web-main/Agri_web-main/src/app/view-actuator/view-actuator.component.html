@@ -1,0 +1,142 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="col-dm-8">
+            <div class="header mb-3">
+                <button routerLink="/actuators" routerLinkActive="active" class="btn btn-outline-success btn-rounded">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+            </div>
+            <div class="card mb-1">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Consultation des informations de l'actionneur</h4>
+                </div>
+                <div class="card-body">
+                    <form #actuatorForm="ngForm" id="regForm">
+
+                        <div class="sensor-selection">
+                            <div *ngFor="let act of availableActuator" class="sensor-card"
+                                [class.selected]="isSelected(act.name)">
+                                <div class="sensor-icon">
+                                    <i [class]="getActuatorIcon(act.name)"></i>
+                                </div>
+                                <div class="sensor-info">
+                                    <h5>{{ act.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paramètres de configuration du capteur sélectionné -->
+                        <div *ngIf="selectedActs.length > 0">
+
+                            <div class="form-group">
+
+                                <!-- Titre section actionneur -->
+                                <h5 class="section-title">Appareil</h5>
+
+                                <!-- Liste des actionneurs après sélection d'un appareil -->
+                                <div *ngIf="act.device != null; else noDevice" class="form-group mb-3">
+                                    <div class="sensor-selection2">
+
+                                        <div class="actuator-card">
+                                            <div class="actuator-icon">
+                                                <i class="material-icons">memory</i>
+                                            </div>
+
+                                            <div class="sensor-info">
+                                                <span>{{ act.device?.codDevice }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #noDevice>
+                                    <div class="text-muted fst-italic mt-2" style="padding-bottom: 0.5cm;">Aucun
+                                        appareil disponible</div>
+
+                                </ng-template>
+
+                                <!-- Titre section paramètres -->
+                                <h5 class="section-title">Capteurs</h5>
+
+                                <!-- Liste des capteurs -->
+                                <div *ngIf="act.sensors && act.sensors.length > 0; else noSensors"
+                                    class="form-group mb-3">
+                                    <div class="sensor-selection2">
+                                        <div *ngFor="let sensor of act.sensors" class="actuator-card">
+                                            <div class="actuator-icon">
+                                                <i class="material-icons">{{ getSensorIcon(sensor.typeSensor) }}</i>
+                                            </div>
+                                            <div class="sensor-info">
+                                                <span>{{ getSensorType(sensor.typeSensor) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #noSensors>
+                                    <div class="text-muted fst-italic mt-2" style="padding-bottom: 0.5cm;">
+                                        Aucun capteur disponible
+                                    </div>
+                                </ng-template>
+
+
+                                <!-- Titre section paramètres -->
+                                <h5 class="section-title">Paramètres de configuration de l'actionneur</h5>
+
+                                <!-- Description -->
+                                <div class="form-group mb-3">
+                                    <label>Description</label>
+                                    <input [readonly]="readOnlyMode" type="text" class="form-control"
+                                        [(ngModel)]="act.description" name="description" required />
+                                </div>
+
+                                
+                                    <!-- Indice -->
+                                    <div class="form-group mb-3">
+                                        <label>Indice</label>
+                                        <input [readonly]="readOnlyMode" type="number" class="form-control"
+                                            [(ngModel)]="act.index" name="index" required />
+                                    </div>
+
+                                    <!-- Mode fonctionnel -->
+
+
+                                <div class="form-group mb-3" style="padding-top: 1%;">
+                                    <div class="row">
+                                        <!-- Coordonnée Longitude -->
+                                        <div class="col-md-6 ">
+                                            <label>Coordonnée longitudinale</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="material-icons">location_on</i></span>
+                                                <input type="number" name="longt" class="form-control"
+                                                    [readonly]="readOnlyMode" [(ngModel)]="act.longt" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Coordonnée Latitude -->
+                                        <div class="col-md-6">
+                                            <label>Coordonnée de latitude</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="material-icons">location_on</i></span>
+                                                <input type="number" name="at" class="form-control"
+                                                    [readonly]="readOnlyMode" [(ngModel)]="act.lat" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Map pour sélection de la position -->
+        <div class="map-container mt-4">
+            <h5>Sélectionnez une position sur la carte :</h5>
+            <div id="device-map"></div>
+            <p class="mt-2">Latitude : {{ act.lat }} | Longitude : {{ act.longt }}</p>
+        </div>

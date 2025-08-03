@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  justify-content: flex-end; /* Aligne le bouton à droite */
+  margin-bottom: 20px;
+}
+
+/* Centrer le texte dans les cellules */
+.table {
+  text-align: center;
+}
+
+/* Centrer les icônes */
+.table td, .table th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.warning-icon {
+    color: #dc3545 !important; /* Rouge si configuration manquante */
+  }
+
+  /* Style général des icônes */
+  .icon {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .icon:hover i {
+    color: #000; /* Changement de couleur au survol */
+  }

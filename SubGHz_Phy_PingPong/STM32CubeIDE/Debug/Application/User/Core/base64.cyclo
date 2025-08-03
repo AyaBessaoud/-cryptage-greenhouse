@@ -1,0 +1,7 @@
+../Application/User/Core/base64.c:16:14:b64_int	7
+../Application/User/Core/base64.c:40:14:b64e_size	3
+../Application/User/Core/base64.c:51:14:b64d_size	1
+../Application/User/Core/base64.c:56:14:b64_encode	6
+../Application/User/Core/base64.c:89:14:b64_decode	5
+../Application/User/Core/base64.c:114:14:b64_encodef	10
+../Application/User/Core/base64.c:163:14:b64_decodef	9

@@ -1,0 +1,94 @@
+.header {
+    display: flex;
+    justify-content: flex-end; /* Aligne le bouton à droite */
+    margin-bottom: 20px;
+  }
+  
+  .add-device-btn {
+    display: flex;
+    align-items: center; /* Aligne l'icône et le texte verticalement */
+    gap: 5px; /* Ajoute un petit espace entre l'icône et le "+" */
+    font-size: 25px;
+    font-weight: bold;
+  }
+  
+  .sensor-count.clickable {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  
+  .plus-icon {
+    
+    font-size: 14px; /* Rend le "+" bien visible */
+    line-height: 1;
+  }
+  
+  /* Style général des icônes */
+  .icon {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  /* Icône de configuration */
+  .config-icon i {
+    color: #007bff; /* Bleu */
+  }
+  
+  .warning-icon {
+    color: #dc3545 !important; /* Rouge si configuration manquante */
+  }
+
+  .command-icon i {
+    color: #3d49d4; /* Rouge */
+  }
+  
+  /* Icône "Voir" */
+  .view-icon i {
+    color: #28a745; /* Vert */
+  }
+  
+  /* Icône "Supprimer" */
+  .delete-icon i {
+    color: #dc3545; /* Rouge */
+  }
+  
+  .icon:hover i {
+    color: #000; /* Changement de couleur au survol */
+  }
+  
+  /* Style des capteurs sous forme de badge */
+  .sensor-badge {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 3px 8px;
+    font-size: 14px;
+    margin-right: 5px;
+    display: inline-block;
+    border: 1px solid #ccc;
+  }
+  
+  /* Centrer le texte dans les cellules */
+  .table {
+    text-align: center;
+  }
+  
+  /* Centrer les icônes */
+  .table td, .table th {
+    vertical-align: middle;
+    text-align: center;
+  }
+  
+  /* Centrer les badges des capteurs */
+  .sensor-badge {
+    display: inline-block;
+    text-align: center;
+  }
+  
+  
+  
+  
+  

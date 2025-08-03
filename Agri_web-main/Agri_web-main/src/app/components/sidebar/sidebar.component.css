@@ -1,0 +1,7 @@
+.logo-img img {
+    width: 50px;  /* Augmente la taille de l'image */
+    height: 50px; /* Assure une hauteur égale pour garder les proportions */
+    border-radius: 50%; /* Rend l'image complètement circulaire */
+    object-fit: cover; /* Garde l'image bien ajustée */
+    margin-top: -10px;
+}

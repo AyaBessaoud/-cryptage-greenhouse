@@ -1,0 +1,7 @@
+../Application/User/Core/base64.c:16:14:b64_int	0	static
+../Application/User/Core/base64.c:40:14:b64e_size	0	static
+../Application/User/Core/base64.c:51:14:b64d_size	0	static
+../Application/User/Core/base64.c:56:14:b64_encode	32	static
+../Application/User/Core/base64.c:89:14:b64_decode	48	static
+../Application/User/Core/base64.c:114:14:b64_encodef	48	static
+../Application/User/Core/base64.c:163:14:b64_decodef	48	static

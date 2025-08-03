@@ -1,0 +1,188 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="col-dm-8">
+            <div class="header mb-3">
+                <button routerLink="/actuators" routerLinkActive="active" class="btn btn-outline-success btn-rounded">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+            </div>
+            <div class="card mb-1">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Ajout d'un nouvel actionneur</h4>
+                </div>
+                <div class="card-body">
+                    <form #actuatorForm="ngForm" id="regForm" (ngSubmit)="onSubmit()">
+
+                        <div class="sensor-selection">
+                            <div *ngFor="let act of availableActuator" class="sensor-card"
+                                [class.selected]="isSelected(act.name)" (click)="toggleActuator(act.name)">
+                                <div class="sensor-icon">
+                                    <i [class]="getActuatorIcon(act.name)"></i>
+                                </div>
+                                <div class="sensor-info">
+                                    <h5>{{ act.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paramètres de configuration du capteur sélectionné -->
+                        <div *ngIf="selectedActs.length > 0">
+
+                            <div class="form-group">
+
+                                <!-- Description -->
+                                <div class="form-group mb-3">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" [(ngModel)]="act.description"
+                                        name="description" required />
+                                </div>
+
+                                <!-----Ferme et serre-->
+                                <div class="row">
+                                <!----Select pour la ferme-->
+                                <div class="col-md-6 mb-3">
+                                    <label>Ferme</label>
+                                    <div class="input-group">
+                                    <span class="input-group-text"><i class="material-icons">grass</i></span>
+                                    <select name="ferme" class="form-control" [(ngModel)]="selectedFarm" (ngModelChange)="changeSerre()"
+                                    required>
+                                    <!---- <option [ngValue]="null">Aucune ferme</option> --->
+                                        <option *ngFor="let ferme of ListFarms" [ngValue]="ferme">{{ ferme.description }}</option>
+                                    </select>
+                                    </div>
+                                </div>
+
+                                <!-- Select pour les serres -->
+                                <div class="col-md-6 mb-3">
+                                    <label>Serre</label>
+                                    <div class="input-group">
+                                    <span class="input-group-text"><i class="material-icons">gite</i></span>
+                                    <select name="serre" class="form-control"  [(ngModel)]="selectedSerre" (ngModelChange)="changeSerre()">
+                                        <option *ngIf="selectedFarm?.serres?.length === 0" [ngValue]="null">Aucune serre</option>
+                                        <option *ngIf="selectedFarm?.serres?.length > 0" [ngValue]="null">Sélectionnez une serre</option>
+                                        <option *ngFor="let serre of selectedFarm?.serres" [ngValue]="serre">{{ serre.description }}</option>
+                                    </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <!----Appareil final-->
+                                <div class="form-group mb-3 row" >
+                                    <div class="col-md-6">
+                                        <label>Nom de l'appareil</label>
+                                        <div class="input-group">
+                                            <select name="device" class="form-control" (change)="SelectDevice(act.device, dev)" required
+                                                [(ngModel)]="act.device" [compareWith]="compareDevices">
+                                                <option *ngIf="selectedSerre?.devices?.length === 0" [ngValue]="null">Aucun appareil</option>
+                                                <option *ngIf="selectedSerre?.devices?.length > 0" [ngValue]="null">Sélectionnez un appareil</option>
+                                                <option *ngFor="let dev of selectedSerre?.devices" [ngValue]="dev">{{ dev.codDevice }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Indice -->
+                                    <div class="col-md-6">
+                                        <label>Indice</label>
+                                        <input type="number" class="form-control" [(ngModel)]="act.index" name="index"
+                                            required />
+                                    </div>
+                                </div>
+                                <div *ngIf="selectedDevice?.sensors?.length > 0; else noSensors" class="form-group mb-3">
+                                    <div class="sensor-selection2">
+                                      <div *ngFor="let sensor of selectedDevice.sensors"
+                                           class="actuator-card"
+                                           [class.selected]="isSelected2(sensor.id)"
+                                           (click)="toggleSensor(sensor.id)">
+                                        <div class="actuator-icon">
+                                          <i class="material-icons">{{ getSensorIcon(sensor.typeSensor) }}</i>
+                                        </div>
+                                        <div class="sensor-info">
+                                          <span>{{ getSensorType(sensor.typeSensor) }}</span>
+                                        </div>
+                                        <div class="selection-indicator" *ngIf="isSelected(sensor.id)">✓</div>
+                                      </div>
+                                    </div>
+                                </div>
+                                  
+                                  <ng-template #noSensors>
+                                    <div *ngIf="dev" class="text-muted fst-italic mt-2" style="padding-bottom: 2%;">
+                                        Aucun capteur disponible
+                                      </div>
+                                  </ng-template>
+                                  
+                                  
+
+                                <!-- Indice + Capteur sur la même ligne -->
+                               <!---- <div class="form-group mb-3 row">
+                                    <div class="col-md-6">
+                                        <label>Capteur</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append" *ngIf="act.localSensor">
+                                                <span class="input-group-text">
+                                                  <i [class]="'bi ' + getSensorIcon(getSensorName(act.sensors.typeSensor))"></i>
+                                                </span>
+                                              </div>
+                                            <select name="sensors" class="form-control"
+                                                [(ngModel)]="act.sensors" >
+                                                <option [ngValue]="null" selected>Aucun capteur</option>
+                                                <option *ngFor="let sensor of act.device?.sensors" [ngValue]="sensor.id">
+                                                      {{getSensorName(sensor.typeSensor) }} </option>
+                                            </select>
+                                            <div class="input-group-append" *ngIf="act.sensors?.id != ''">
+                                                <span class="input-group-text" style="color: red; font-size: 0.7rem;">
+                                                  {{act.localSensor?.index}}
+                                                </span>
+                                              </div>
+                                        </div>
+                                    </div>
+                                </div>---->
+
+
+                                <div class="form-group mb-3" style="padding-top: 1%;">
+                                    <div class="row">
+                                        <!-- Coordonnée Longitude -->
+                                        <div class="col-md-6 ">
+                                            <label>Coordonnée longitudinale</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="material-icons">location_on</i></span>
+                                                <input type="number" name="longt" class="form-control"
+                                                    [(ngModel)]="act.longt" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Coordonnée Latitude -->
+                                        <div class="col-md-6">
+                                            <label>Coordonnée de latitude</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="material-icons">location_on</i></span>
+                                                <input type="number" name="at" class="form-control"
+                                                    [(ngModel)]="act.lat" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <!----Boutton-------------->
+                        <div class="col-md-12 text-right mt-3">
+                            <button type="submit" [disabled]="!actuatorForm.valid" class="btn btn-success btn-rounded">
+                                Soumettre
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Map pour sélection de la position -->
+        <div class="map-container mt-4">
+            <h5>Sélectionnez une position sur la carte :</h5>
+            <div id="device-map"></div>
+            <p class="mt-2">Latitude : {{ act.lat }} | Longitude : {{ act.longt }}</p>
+        </div>

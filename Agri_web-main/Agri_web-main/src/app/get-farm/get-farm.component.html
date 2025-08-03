@@ -1,0 +1,156 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-dm-8">
+      <div class="header mb-3">
+        <button class="btn btn-outline-danger" (click)="openModalAjout()" *ngIf="role === 'Admin'">
+          <i class="material-icons">grass</i> <!-- Icône de capteur -->
+          <span class="plus-icon">+</span> <!-- Symbole "+" -->
+        </button>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Gestion des fermes</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead class="text-primary">
+                <tr>
+                  <th>Description</th>
+                  <th>Liste des serres</th>
+                  <th *ngIf="role === 'Admin'">Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ferme of listFarms">
+                  <td>{{ ferme.description }}</td>
+                  <td>
+                    <span class="sensor-count clickable" (click)="openSerresModal(ferme)">
+                      {{ ferme.serres?.length || 0 }}
+                    </span>
+                  </td>
+                  <td *ngIf="role === 'Admin'">
+                    <span class="icon warning-icon" (click)="openModalModif(ferme)">
+                      <i class="material-icons">settings</i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Liste des serres -->
+<div class="modal fade" id="fermeModal" tabindex="-1" role="dialog" aria-labelledby="sensorModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-3" style="border-radius: 10px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" style="color:#1d1dcd !important;">
+            <i class="material-icons" style="font-size: 1.5rem; color: #1d1dcd;">info</i>
+            Détails
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <ul *ngIf="selectedFarm?.serres?.length; else noSerre">
+          <li *ngFor="let serre of selectedFarm.serres"
+            style=" font-size: 14px; font-weight: 300; line-height: 1.5;">
+            {{ serre.description }}
+          </li>
+        </ul>
+        <ng-template #noSerre>
+          <p>Aucune serre disponible.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ajout Nouvelle Ferme -->
+<div class="modal fade" id="addFarm" tabindex="-1" role="dialog" aria-labelledby="addFarmLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content p-4 shadow-lg rounded-3">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold d-flex align-items-center gap-3" 
+    style="
+        color: #2e7d32; /* Vert foncé naturel */
+        font-size: 1.3rem;
+        letter-spacing: 0.3px;
+        padding: 0.5rem 0;
+        margin-bottom: 0.5rem;
+        font-family: 'Roboto', sans-serif;
+    ">
+    <i class="material-icons fs-2" style="color: #388e3c;">grass</i>
+      Ajouter une nouvelle ferme
+    </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body pt-2">
+        <form #FarmForm="ngForm" id="regForm" (ngSubmit)="onSubmit()">
+          <!-- Description -->
+          <div class="form-group mb-3">
+            <label for="description" class="form-label fw-semibold text-muted">Description</label>
+            <input type="text" id="description" class="form-control border-primary" name="description"
+              [(ngModel)]="addFarm.description" required placeholder="Ex : Ferme Nord" />
+          </div>
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success btn-block" [disabled]="!FarmForm.form.valid">
+               Ajouter la ferme
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal modification du Ferme -->
+<div class="modal fade" id="modifFarm" tabindex="-1" role="dialog" aria-labelledby="addFarmLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content p-4 shadow-lg rounded-3">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold d-flex align-items-center gap-3" 
+            style="
+                color: #2e7d32; /* Vert foncé naturel */
+                font-size: 1.3rem;
+                letter-spacing: 0.3px;
+                padding: 0.5rem 0;
+                margin-bottom: 0.5rem;
+                font-family: 'Roboto', sans-serif;">
+            <i class="material-icons fs-2" style="color: #388e3c;">grass</i>
+            Modifier {{selectedFarm1.description}}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body pt-2">
+        <form #modifForm="ngForm" id="regForm" (ngSubmit)="ModifierFerme()">
+          <!-- Description -->
+          <div class="form-group mb-3">
+            <label for="description" class="form-label fw-semibold text-muted">Description</label>
+            <input type="text" id="description" class="form-control border-primary" name="description"
+              [(ngModel)]="selectedFarm.description" required placeholder="Ex : Ferme tomate" />
+          </div>
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success btn-block" [disabled]="!modifForm.form.valid">
+               Modifer la ferme
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,55 @@
+/*
+
+  
+  .custom-card-title {
+    font-size: 1.5rem; // Augmente la taille 
+    padding: 10px 0; // Ajoute un peu d'espace autour 
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 20px;
+  }
+}
+
+  .title {
+    border-bottom-style:groove   ;
+  }
+
+.card-body{
+  background-color: rgb(255, 255, 255);
+    box-shadow: 10px 10px 53px 0px rgba(58,56,56,0.43);
+    -webkit-box-shadow: 10px 10px 53px 0px rgba(58,56,56,0.43);
+    -moz-box-shadow: 10px 10px 53px 0px rgba(58,56,56,0.43);
+    border-radius: 15px;
+}
+*/
+.header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+/* Style pour la carte */
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header-danger {
+  background: linear-gradient(60deg, #ef5350, #e53935);
+  color: white;
+}
+
+
+/* Bouton de soumission */
+.btn-success {
+  background-color: #4caf50;
+  border: none;
+  padding: 10px 25px;
+  font-weight: 500;
+}
+
+.btn-success:hover {
+  background-color: #3d8b40;
+}

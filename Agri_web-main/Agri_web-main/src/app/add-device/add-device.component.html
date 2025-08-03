@@ -1,0 +1,128 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div >
+
+      <!-- Bouton Retour -->
+      <div class="header mb-3">
+        <button routerLink="/devices" routerLinkActive="active" class="btn btn-outline-success btn-rounded">
+          <i class="material-icons">arrow_back</i>
+        </button>
+      </div>
+
+      <!-- Formulaire d'ajout -->
+      <div class="card mb-4">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Ajout d'un nouvel appareil</h4>
+        </div>
+
+        <div class="card-body">
+          <form #deviceForm="ngForm" id="regForm" (ngSubmit)="onSubmit()">
+
+            <!-- Nom de l'appareil -->
+            <div class="form-group mb-3">
+              <label for="codDevice" class="form-label">Type du microcontrôleur</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="material-icons">devices</i></span>
+                <select id="type" name="type" class="form-control" [(ngModel)]="device.type" required>
+                  <option value="" disabled selected>Sélectionnez un type...</option>
+                  <option *ngFor="let type of microcontrollerTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <!----Select pour la ferme-->
+              <div class="col-md-6 mb-3">
+                <label>Ferme</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">grass</i></span>
+                  <select name="ferme" class="form-control" [(ngModel)]="selectedFarm" (ngModelChange)="onFarmChange()"
+                   required>
+                   <!---- <option [ngValue]="null">Aucune ferme</option> --->
+                    <option *ngFor="let ferme of ListFarms" [ngValue]="ferme">{{ ferme.description }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Select pour les serres -->
+              <div class="col-md-6 mb-3">
+                <label>Serre</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">gite</i></span>
+                  <select name="serre" class="form-control" (change)="onSerreChange($event.target.value)"
+                    [(ngModel)]="device.serre.id" required>
+                    <option *ngIf="selectedFarm?.serres?.length === 0" [value]="0">Aucune serre</option>
+                    <option *ngIf="selectedFarm?.serres?.length > 0" [value]="0">Sélectionnez une serre</option>
+                    <option *ngFor="let serre of selectedFarm?.serres" [value]="serre.id">{{ serre.description }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+
+            <!-- Titre section paramètres -->
+            <h5 class="section-title">Paramètres de configuration de l'appareil</h5>
+
+            <div class="row">
+              <!-- Fréquence capteurs -->
+              <div class="col-md-6 mb-3">
+                <label>Fréquence de transmission des capteurs</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">schedule</i></span>
+                  <select name="device.config.PS" class="form-control" [(ngModel)]="device.config.ps" required>
+                    <option value="" disabled selected>Choisir une fréquence...</option>
+                    <option *ngFor="let freq of [1, 5, 10, 15, 30, 45, 60]" [value]="freq">{{ freq }} min</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Fréquence actionneurs -->
+              <div class="col-md-6 mb-3">
+                <label>Fréquence de transmission des actionneurs</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">schedule</i></span>
+                  <select name="device.config.PA" class="form-control" [(ngModel)]="device.config.pa" required>
+                    <option value="" disabled selected>Choisir une fréquence...</option>
+                    <option *ngFor="let freq of [1, 5, 10, 15, 30, 45, 60]" [value]="freq">{{ freq }} min</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Coordonnée Longitude -->
+              <div class="col-md-6 mb-3">
+                <label>Coordonnée longitudinale</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">location_on</i></span>
+                  <input type="number" name="device.config.longt" class="form-control" [(ngModel)]="device.config.longt" required>
+                </div>
+              </div>
+
+              <!-- Coordonnée Latitude -->
+              <div class="col-md-6 mb-3">
+                <label>Coordonnée de latitude</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">location_on</i></span>
+                  <input type="number" name="device.config.lat" class="form-control" [(ngModel)]="device.config.lat" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="d-flex justify-content-end mt-4">
+              <button type="submit" [disabled]="!deviceForm.valid || device.serre.id === 0" class="btn btn-success btn-rounded">
+                Soumettre
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Carte de sélection -->
+      <div class="map-container mt-5">
+        <h5>Sélectionnez une position sur la carte :</h5>
+        <div id="device-map"></div>
+        <p class="mt-2">Latitude : {{ device.config.lat }} | Longitude : {{ device.config.longt }}</p>
+      </div>
+    </div>
+  </div>
+</div>

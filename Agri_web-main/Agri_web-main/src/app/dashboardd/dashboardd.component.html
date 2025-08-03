@@ -1,0 +1,187 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <!-- Navigation des serres -->
+        <div *ngIf="serresList?.length > 0; else noSerre" class="d-flex align-items-center gap-3 mb-3">
+            <!-- Précédent serre -->
+            <button class="btn btn-outline-success rounded d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px" (click)="prevSerre()" [disabled]="isFirst()">
+                <i class="material-icons">chevron_left</i>
+            </button>
+
+            <!-- Nom de la serre -->
+            <h5 class="mb-0 fw-semibold">{{ serresList[currentSerreIndex]?.description }}</h5>
+
+            <!-- Suivant serre -->
+            <button class="btn btn-outline-info rounded d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px" (click)="nextSerre()" [disabled]="isLast()">
+                <i class="material-icons">chevron_right</i>
+            </button>
+        </div>
+
+        <!-- Navigation des appareils finaux -->
+        <div *ngIf="hasHistoryData()" class="d-flex align-items-center gap-3 mb-4" style="padding-left: 1cm;">
+            <!-- Précédent appareil -->
+            <button class="btn btn-outline-success rounded d-flex align-items-center justify-content-center"
+                style="width: 36px; height: 36px" (click)="prevCodDevice()" [disabled]="currentCodDeviceIndex === 0">
+                <i class="material-icons">chevron_left</i>
+            </button>
+
+            <!-- Nom de l'appareil -->
+            <span class="fw-medium">{{ getCurrentCodDevice() }}</span>
+
+            <!-- Suivant appareil -->
+            <button class="btn btn-outline-info rounded d-flex align-items-center justify-content-center"
+                style="width: 36px; height: 36px" (click)="nextCodDevice()"
+                [disabled]="currentCodDeviceIndex === codDevices.length - 1">
+                <i class="material-icons">chevron_right</i>
+            </button>
+        </div>
+
+
+        <!-- Message si aucune serre disponible -->
+        <ng-template #noSerre>
+            <div class="text-center text-muted my-4">
+                <i class="material-icons" style="font-size: 40px;">info</i>
+                <p>Aucune serre disponible</p>
+            </div>
+        </ng-template>
+        <div *ngIf="!hasHistoryData(); else displayCards" class="text-center text-muted my-4">
+            <i class="material-icons" style="font-size: 40px;">info</i>
+            <p>Aucune donnée disponible pour cette serre.</p>
+        </div>
+        
+        <ng-template #displayCards>
+            <div class="row">
+
+                <!-- CARD: Battery -->
+                <div class="col-lg-3 col-md-6 col-sm-6" *ngIf="selectedDeviceData?.deviceHistory">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-icon" [ngClass]="{
+                    'card-header-success': selectedDeviceData.deviceHistory[0].battery >= 204,
+                    'card-header-warning': selectedDeviceData.deviceHistory[0].battery < 204 && selectedDeviceData.deviceHistory[0].battery >= 127,
+                    'card-header-danger': selectedDeviceData.deviceHistory[0].battery < 127
+                    }">
+                            <div class="card-icon">
+                                <i class="material-icons">
+                                    {{ getBatteryIcon(selectedDeviceData?.deviceHistory[0]?.battery) }}
+                                </i>
+                            </div>
+                            <h3 class="card-title" style="font-size: 18px;">Niveau de batterie</h3>
+                            <h3 class="card-title"
+                                [ngClass]="{ 'text-danger': selectedDeviceData?.deviceHistory[0]?.battery <  85 }">
+                                {{ (selectedDeviceData?.deviceHistory[0]?.battery / 254 * 100) | number: '1.0-0' }}%
+                            </h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">schedule</i> {{ selectedDeviceData?.deviceHistory[0]?.date |
+                                date:'short' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- CARD: Capteurs -->
+                <ng-container *ngFor="let sensor of getSensorArray(selectedDeviceData?.sensors)">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header card-header-info card-header-icon">
+                                <div class="card-icon">
+                                    <i class="material-icons">{{ getSensorIcon(sensor?.typeSensor) }}</i>
+                                </div>
+                                <h3 class="card-title" style="font-size: 18px;">{{
+                                    getSensorType(sensor?.typeSensor) }}</h3>
+                                <p class="card-category" style="font-size: 14px;color: #4a3737">
+                                    {{sensor?.description }}</p>
+                                <h3 class="card-title" [ngClass]="{ 'text-danger': sensor?.etat === 0 }">{{
+                                    sensor?.value }}</h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">schedule</i> {{ sensor?.date | date:'short' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- CARD: Actionneurs -->
+                <ng-container *ngFor="let act of getActuatorArray(selectedDeviceData?.actuators)">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header card-header-primary card-header-icon">
+                                <div class="card-icon">
+                                    <i [class]="getActuatorIcon(act.output)"></i>
+                                </div>
+                                <h3 class="card-title" style="font-size: 18px;">{{ act?.output }}</h3>
+                                <p class="card-category" style="font-size: 14px; color: #4a3737">{{ act?.description }}
+                                </p>
+                                <h3 class="card-title">État : {{ act?.etat === 1 ? 'ON' : 'OFF' }}</h3>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">schedule</i> {{ act?.date | date:'short' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
+        </ng-template>
+          
+
+        <!--- <canvas baseChart
+  [datasets]="lineChartData"
+  [labels]="lineChartLabels"
+  [options]="lineChartOptions"
+  [legend]="true"
+   [type]="'line'">
+</canvas> -->
+
+        <!-- Température -->
+        <div class="card my-3 shadow-sm" *ngIf="sensorHistoryData != null">
+            <div class="card-body">
+                <apx-chart *ngIf="temperatureChart" [series]="temperatureChart.series" [chart]="temperatureChart.chart"
+                    [xaxis]="temperatureChart.xaxis" [title]="temperatureChart.title" [stroke]="temperatureChart.stroke"
+                    [dataLabels]="temperatureChart.dataLabels" [tooltip]="temperatureChart.tooltip">
+                </apx-chart>
+            </div>
+        </div>
+
+
+        <!-- Humidité -->
+        <div class="card my-3 shadow-sm" *ngIf="sensorHistoryData != null">
+            <div class="card-body">
+                <apx-chart *ngIf="humiditeChart" [series]="humiditeChart.series" [chart]="humiditeChart.chart"
+                    [xaxis]="humiditeChart.xaxis" [title]="humiditeChart.title" [stroke]="humiditeChart.stroke"
+                    [dataLabels]="humiditeChart.dataLabels" [tooltip]="humiditeChart.tooltip">
+                </apx-chart>
+            </div>
+        </div>
+
+        <!-- Humidité du sol -->
+        <div class="card my-3 shadow-sm" *ngIf="sensorHistoryData != null">
+            <div class="card-body">
+                <apx-chart *ngIf="humiditeSolChart" [series]="humiditeSolChart.series" [chart]="humiditeSolChart.chart"
+                    [xaxis]="humiditeSolChart.xaxis" [title]="humiditeSolChart.title" [stroke]="humiditeSolChart.stroke"
+                    [dataLabels]="humiditeSolChart.dataLabels" [tooltip]="humiditeSolChart.tooltip">
+                </apx-chart>
+            </div>
+        </div>
+
+        <!-- Gaz -->
+        <div class="card my-3 shadow-sm" *ngIf="sensorHistoryData != null">
+            <div class="card-body">
+                <apx-chart *ngIf="gazChart" [series]="gazChart.series" [chart]="gazChart.chart" [xaxis]="gazChart.xaxis"
+                    [title]="gazChart.title" [stroke]="gazChart.stroke" [dataLabels]="gazChart.dataLabels"
+                    [tooltip]="gazChart.tooltip">
+                </apx-chart>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

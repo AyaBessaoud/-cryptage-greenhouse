@@ -1,0 +1,103 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="col-dm-8">
+            <div class="header mb-3">
+                <button routerLink="/actuators/addActuator" routerLinkActive="active" class="btn btn-outline-danger" *ngIf="role === 'Admin'">
+                    <i class="material-icons">precision_manufacturing</i> <!-- Icône de capteur -->
+                    <span class="plus-icon">+</span> <!-- Symbole "+" -->
+                </button>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Gestion des actionneurs</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th>Identificateur</th>
+                                    <th>Actionneur</th>
+                                    <th>Appareil</th>
+                                    <th>Indice</th>
+                                    <th>ON/OFF</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let act of acts">
+                                    <td>{{ act.idU }}</td>
+                                    <td>
+                                        {{ act.output}}
+                                      </td>
+                                      
+                                      <td>
+                                        {{ act.device?.codDevice || 'Aucun appareil' }}
+
+                                      </td>
+                                      
+                                    <td>
+                                        {{ act.index}}
+                                    </td>
+                                    <td>
+                                        
+                                        <label class="switch" [ngClass]="{
+                                                            'confirmed': !pendingUpdates.has(act.idU),
+                                                            'pending': pendingUpdates.has(act.idU)
+                                                            }">
+                                            <input type="checkbox" [checked]="historyMap.get(act.idU) === 1" (change)="onToggle($event, act)">
+                                            <span class="slider round"></span>
+                                        </label>
+                                       
+                                    </td>
+                                    <td>
+                                        <span class="icon warning-icon" [routerLink]="['/actuators/modifAct', act.id]" 
+                                        routerLinkActive="active" *ngIf="role === 'Admin'">
+                                            <i class="material-icons">settings</i>
+                                        </span>
+                                        <span class="icon view-icon" [routerLink]="['/actuators/viewActuator', act.id]" 
+                                        routerLinkActive="active">
+                                            <i class="material-icons">visibility</i>
+                                        </span>
+                                        <span class="icon delete-icon" (click)="SelectActuator(act)" *ngIf="role === 'Admin'">
+                                            <i class="material-icons">delete</i>
+                                        </span>
+                                        <span class="icon command-icon" (click)="sendCommand(act,'CFGA')" *ngIf="role === 'Admin'">
+                                            <i class="material-icons">arrow_circle_right</i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Modal 2-->
+<div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content p-3" style="border-radius: 10px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger">Suppression</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p style="color: #d22346; font-size: 14px; font-weight: 500; line-height: 1.5;">
+                    Voulez vous vraiment supprimer cet actionneur? 
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-danger btn-sm" (click)="deleteAct(act.id)" data-dismiss="modal">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>

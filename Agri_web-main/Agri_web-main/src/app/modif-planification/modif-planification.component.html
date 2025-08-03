@@ -1,0 +1,301 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="col-dm-8">
+            <div class="header mb-3">
+                <button routerLink="/planification" routerLinkActive="active"
+                    class="btn btn-outline-success btn-rounded">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+            </div>
+            <div class="card mb-1">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Modifier une planification</h4>
+                </div>
+                <div class="card-body">
+                    <form #PlanifForm="ngForm" id="regForm">
+                        <!-- Description -->
+                        <div class="form-group mb-3">
+                            <label>Description</label>
+                            <input type="text" class="form-control" name="description" [(ngModel)]="planif.description"
+                                required />
+                        </div>
+
+                        <div class="row">
+                            <!----Select pour la ferme-->
+                            <div class="col-md-6 mb-3">
+                                <label>Ferme</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="material-icons">grass</i></span>
+                                    <select name="ferme" class="form-control" [(ngModel)]="selectedFarm"
+                                        (ngModelChange)="onFarmChange()" required>
+                                        <option *ngFor="let ferme of ListFarms" [ngValue]="ferme">{{ ferme.description
+                                            }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Select pour les serres -->
+                            <div class="col-md-6 mb-3">
+                                <label>Serre</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="material-icons">gite</i></span>
+                                    <select name="serre" class="form-control"
+                                        (change)="onSerreChange($event.target.value)" [(ngModel)]="selectedGreenHouse"
+                                        required>
+                                        <option *ngIf="selectedFarm?.serres?.length > 0" [ngValue]="null">Sélectionnez
+                                            une serre</option>
+                                        <option *ngIf="selectedFarm?.serres?.length == 0" [ngValue]="null">Aucune
+                                            serre disponible</option>
+                                        <option *ngFor="let serre of selectedFarm?.serres" [ngValue]="serre">{{
+                                            serre.description }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!------------Appareil final----------------->
+                        <div class="form-group mb-3">
+                            <label>Nom de l'appareil</label>
+                            <div class="input-group">
+                                <select name="device" class="form-control" [(ngModel)]="selectedDevice" required
+                                    (ngModelChange)="SelectDevice($event)" [compareWith]="compareDevices">
+                                    <option *ngIf="selectedGreenHouse?.devices?.length > 0" [ngValue]="null">
+                                        Sélectionnez un
+                                        appareil</option>
+                                    <option *ngIf="selectedGreenHouse?.devices?.length == 0" [ngValue]="null">Aucun
+                                        appareil disponible</option>
+                                    <option *ngFor="let dev of selectedGreenHouse?.devices" [ngValue]="dev">{{
+                                        dev.codDevice
+                                        }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!------------List des actionneurs--------->
+                        <div *ngIf="selectedDevice?.localActuators?.length > 0; else noActs" class="form-group mb-3">
+                            <div class="sensor-selection2">
+                                <div *ngFor="let act of selectedDevice?.localActuators" class="actuator-card"
+                                    [class.selected]="selectedActuator?.id == act.id" (click)="selectActuator(act)">
+                                    <div class="actuator-icon">
+                                        <i i [class]="getActuatorIcon(act.output)"></i>
+                                    </div>
+                                    <div class="sensor-info">
+                                        <span>{{ act.output }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-template #noActs>
+                            <div *ngIf="dev" class="text-muted fst-italic mt-2" style="padding-bottom: 2%;">
+                                Aucun actionneur disponible
+                            </div>
+                        </ng-template>
+
+                        <div class="switch-container">
+                            <label class="switch-label">Allumer / Éteindre</label> <!-- Le label au-dessus -->
+
+                            <label class="switch">
+                                <input type="checkbox" (change)="onToggle($event)"  [(ngModel)]="planif.etat">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                         <div class="d-flex flex-wrap gap-2 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" [(ngModel)]="planif.blocked">
+                                    <label class="form-check-label">
+                                         Annuler la planification
+                                    </label>
+                                </div>
+                            </div>
+
+
+                        <!-------Calendrier---------------->
+                        <!-- Choix du pattern -->
+                        <div class="form-group mb-3">
+                            <label>Type de Planification</label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="form-check">
+                                    <label>
+                                        <input class="form-check-input" type="radio" name="pattern"
+                                            [(ngModel)]="planif.pattern" (ngModelChange)="onPlanningTypeChange()"
+                                            value="custom">
+                                        Personnalisé
+                                    </label><br>
+                                </div>
+
+                                <div class="form-check">
+                                    <label>
+                                        <input class="form-check-input" type="radio" name="pattern"
+                                            [(ngModel)]="planif.pattern" (ngModelChange)="onPlanningTypeChange()"
+                                            value="daily">
+                                        Quotidien
+                                    </label><br>
+                                </div>
+
+                                <div class="form-check">
+                                    <label>
+                                        <input class="form-check-input" type="radio" name="pattern"
+                                            [(ngModel)]="planif.pattern" (ngModelChange)="onPlanningTypeChange()"
+                                            value="monthly">
+                                        Mensuel
+                                    </label><br>
+                                </div>
+
+                                <div class="form-check">
+                                    <label>
+                                        <input class="form-check-input" type="radio" name="pattern"
+                                            [(ngModel)]="planif.pattern" (ngModelChange)="onPlanningTypeChange()"
+                                            value="yearly">
+                                        Annuel
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- CUSTOM -->
+                        <!-- Section conditionnelle pour les Dates Spécifiques -->
+                        <div *ngIf="planif.pattern === 'custom'" class="form-group mb-3 p-3 border rounded">
+                            <label>Dates et Heures de Planification Spécifiques</label>
+                            <mat-calendar [selected]="selectedDates" (selectedChange)="onDateSelected($event)"
+                                selectionMode="multiple" [dateClass]="dateClass()">
+                            </mat-calendar>
+
+                            <!-- Liste des paires date-heure sélectionnées -->
+                            <div *ngIf="planifDateTimeEntries.length > 0" class="mt-4">
+                                <strong>Dates et Heures sélectionnées :</strong>
+                                <ul class="list-group">
+                                    <li *ngFor="let entry of planifDateTimeEntries; let i = index"
+                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>{{ entry.date | date:'fullDate' }}</span>
+                                        <div class="d-flex align-items-center">
+                                            <!-- Liaison bidirectionnelle pour l'heure de chaque date -->
+                                            <input type="time" class="form-control me-2" [(ngModel)]="entry.time"
+                                                [name]="'time_' + i" required>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="removeDateTimeEntry(entry)">
+                                                <i class="material-icons">close</i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div *ngIf="planifDateTimeEntries.length === 0" class="text-muted mt-2">
+                                Aucune date sélectionnée. Cliquez sur le calendrier pour ajouter des dates.
+                            </div>
+                        </div>
+
+                        <!-- DAILY -->
+                        <div *ngIf="planif.pattern === 'daily'" class="form-group mb-3 p-3 border rounded">
+                            <label>Jours de la Semaine</label>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <div *ngFor="let day of daysOfWeek" class="form-check">
+                                    <input class="form-check-input" type="checkbox" [value]="day"
+                                        (change)="onDailyDayChange(day, $event)"
+                                        [checked]="dailySelectedDays.includes(day)" [name]="'dailyDay_' + day">
+                                    <label class="form-check-label">
+                                        {{ day }}
+                                    </label>
+                                </div>
+                            </div>
+                            <label>Heures de Planification Quotidienne</label>
+                            <div *ngFor="let timeSlot of dailySelectedTimes; let i = index"
+                                class="d-flex align-items-center mb-2">
+                                <input type="time" class="form-control me-2" [(ngModel)]="dailySelectedTimes[i]"
+                                    [name]="'dailyTime_' + i" required>
+                                <button type="button" class="btn btn-danger btn-sm" (click)="removeDailyTime(i)"
+                                    [disabled]="dailySelectedTimes.length === 1">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm mt-2" (click)="addDailyTime()">
+                                Ajouter une autre heure
+                            </button>
+                        </div>
+
+                        <!-- MONTHLY -->
+                        <div *ngIf="planif.pattern === 'monthly'" class="form-group mb-3 p-3 border rounded">
+                            <label>Jours de la Semaine (Mensuel)</label>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <div *ngFor="let day of daysOfWeek; let idx = index" class="form-check">
+                                    <input class="form-check-input" type="checkbox" [value]="day"
+                                        (change)="onMonthlyDayChange(day, $event)"
+                                        [checked]="monthlySelectedDays.includes(day)" [name]="'monthlyDay_' + idx">
+                                    <label class="form-check-label">
+                                        {{ day }}
+                                    </label>
+                                </div>
+                            </div>
+                            <label>Heures de Planification Mensuelle</label>
+                            <div *ngFor="let timeSlot of monthlySelectedTimes; let i = index"
+                                class="d-flex align-items-center mb-2">
+                                <input type="time" class="form-control me-2" [(ngModel)]="monthlySelectedTimes[i]"
+                                    [name]="'monthlyTime_' + i" required>
+                                <button type="button" class="btn btn-danger btn-sm" (click)="removeMonthlyTime(i)"
+                                    [disabled]="monthlySelectedTimes.length === 1">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm mt-2" (click)="addMonthlyTime()">
+                                Ajouter une autre heure
+                            </button>
+                        </div>
+
+                        <!-- YEARLY -->
+                        <div *ngIf="planif.pattern === 'yearly'" class="form-group mb-3 p-3 border rounded">
+                            <label>Mois de l'année</label>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <div *ngFor="let month of monthsOfYear" class="form-check">
+                                    <input class="form-check-input" type="checkbox" [value]="month"
+                                        (change)="onYearlyMonthChange(month, $event)"
+                                        [checked]="yearlySelectedMonths.includes(month)"
+                                        [name]="'yearlyMonth_' + month">
+                                    <label class="form-check-label">
+                                        {{ month }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <label>Jours de la Semaine à Répéter Chaque Semaine dans ces Mois</label>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <div *ngFor="let day of daysOfWeek" class="form-check">
+                                    <input class="form-check-input" type="checkbox" [value]="day"
+                                        (change)="onYearlyDayOfWeekChange(day, $event)"
+                                        [checked]="yearlySelectedDaysOfWeek.includes(day)"
+                                        [name]="'yearlyDayOfWeek_' + day">
+                                    <label class="form-check-label">
+                                        {{ day }}
+                                    </label>
+                                </div>
+                            </div>
+                            <label>Heures de Planification Annuelle</label>
+                            <div *ngFor="let timeSlot of yearlySelectedTimes; let i = index"
+                                class="d-flex align-items-center mb-2">
+                                <input type="time" class="form-control me-2" [(ngModel)]="yearlySelectedTimes[i]"
+                                    [name]="'yearlyTime_' + i" required>
+                                <button type="button" class="btn btn-danger btn-sm" (click)="removeYearlyTime(i)"
+                                    [disabled]="yearlySelectedTimes.length === 1">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm mt-2" (click)="addYearlyTime()">
+                                Ajouter une autre heure
+                            </button>
+                        </div>
+
+                        <!-- Bouton de soumission du formulaire -->
+                         <div col-md-12 text-right mt-3>
+                             <button type="submit" class="btn btn-success" 
+                            [disabled]="!PlanifForm.valid || (planif.pattern === '')">
+                            Soumettre la Planification
+                        </button>
+                         </div>
+                       
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+../libraries/BH1750.c:13:6:BH1750_write	16	static
+../libraries/BH1750.c:6:6:BH1750_init	8	static
+../libraries/BH1750.c:20:10:BH1750_read_data	24	static
+../libraries/BH1750.c:32:11:BH1750_Lumen	8	static

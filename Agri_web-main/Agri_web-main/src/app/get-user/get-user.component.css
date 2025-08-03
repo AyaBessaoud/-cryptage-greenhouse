@@ -1,0 +1,184 @@
+.header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .add-device-btn {
+    display: flex;
+    align-items: center; /* Aligne l'icône et le texte verticalement */
+    gap: 5px; /* Ajoute un petit espace entre l'icône et le "+" */
+    font-size: 25px;
+    font-weight: bold;
+  }
+
+  .plus-icon {
+    
+    font-size: 14px; /* Rend le "+" bien visible */
+    line-height: 1;
+  }
+  
+  /* Style général des icônes */
+  .icon {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  /* Icône "Supprimer" */
+  .delete-icon i {
+    color: #4440c5; /* Rouge */
+  }
+  
+  .icon:hover i {
+    color: #000; /* Changement de couleur au survol */
+  }
+  
+  /* Centrer le texte dans les cellules */
+  .table {
+    text-align: center;
+  }
+  
+  /* Centrer les icônes */
+  .table td, .table th {
+    vertical-align: middle;
+    text-align: center;
+  }
+
+/* css pour les modal */
+/* Style général des modals */
+#FarmModal .modal-content,
+#serreModal .modal-content {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header des modals */
+#FarmModal .modal-header,
+#serreModal .modal-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  background-color: #f8f9fa;
+}
+
+#FarmModal .modal-title,
+#serreModal .modal-title{
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #2e7d32 !important;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#FarmModal .modal-title .material-icons,
+#serreModal .modal-title .material-icons {
+  font-size: 1.5rem;
+  color: inherit; /* Reprend la couleur du parent */
+}
+
+/* Body des modals */
+#FarmModal .modal-body,
+#serreModal .modal-body {
+  padding: 1.5rem;
+}
+
+/* Style des listes */
+#FarmModal ul ,
+#serreModal ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style des éléments de liste */
+#FarmModal ul li ,
+#serreModal ul li {
+  padding: 12px 16px;
+  margin: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #444;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+#FarmModal ul li:hover,
+#serreModal ul li:hover {
+  background-color: #f0f5ff;
+  border-color: #1d1dcd;
+  transform: translateX(5px);
+  color: #1d1dcd;
+  box-shadow: 0 2px 8px rgba(29, 29, 205, 0.1);
+}
+
+/* Style pour les messages "Aucun... disponible" */
+#FarmModal .nocmd p,
+#serreModal .nocmd p {
+  color: #666;
+  font-style: italic;
+  padding: 15px 0;
+  text-align: center;
+  margin: 0;
+}
+
+/* Bouton de fermeture */
+#FarmModal .close,
+#serreModal .close {
+  font-size: 1.5rem;
+  color: #999;
+  transition: all 0.3s ease;
+  position: absolute;
+  right: 1.5rem;
+  top: 1.2rem;
+}
+
+#FarmModal .close:hover,
+#serreModal .close:hover {
+  color: #1d1dcd;
+  transform: scale(1.1);
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+  #FarmModal .modal-dialog,
+  #serreModal .modal-dialog{
+    margin: 10px;
+  }
+  
+  #FarmModal .modal-header,
+  #serreModal .modal-header {
+    padding: 1rem;
+  }
+  
+  #FarmModal .modal-body,
+  #serreModal .modal-body {
+    padding: 1rem;
+  }
+  
+  #FarmModal ul li,
+  #serreModal ul li {
+    padding: 10px 14px;
+  }
+}
+  
+#FarmModal ul li.selected,
+ #serreModal ul li.selected{
+  background-color: #e6f7ff;
+  border-color: #046332;
+  color: #26942d;
+  font-weight: bold;
+}
+ 
+  
+  
+  

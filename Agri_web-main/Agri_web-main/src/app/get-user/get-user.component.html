@@ -1,0 +1,138 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="header">
+            <button routerLink="/users/addUser" routerLinkActive="active" class="btn btn-outline-danger add-employee-button">
+                <i class="material-icons">person_add</i>
+            </button>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header card-header-danger">
+                <h4 class="card-title">Gestion des utilisateurs</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class=" text-primary">
+                            <tr>
+                                <th>Prénom</th>
+                                <th>Nom</th>
+                                <th>Adresse email</th>
+                                <th>Numéro de téléphone</th>
+                                <th>Adresse</th>
+                                <th>Rôle</th>
+                                <th>Option</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let emp of empList">
+                                <td>{{ emp.firstName }}</td>
+                                <td>{{ emp.lastName }}</td>
+                                <td>{{ emp.email }}</td>
+                                <td>{{ emp.mobile }}</td>
+                                <td>{{ emp.address }}</td>
+                                <td>{{ emp.role }}</td>
+                                <td>
+                                    <span class="icon delete-icon" (click)="SelectPerson(emp)" *ngIf="emp.role === 'Agriculteur'">
+                                        <i class="material-icons">add_circle</i>
+                                    </span>
+                                    <span class="icon delete-icon" *ngIf="emp.role === 'Admin'">
+                                        <i class="material-icons">remove</i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal 2-->
+<!---
+<div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content p-3" style="border-radius: 10px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger">Suppression</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p style="color: #d22346; font-size: 14px; font-weight: 500; line-height: 1.5;">
+                    Voulez vous vraiment supprimer {{employee.firstName}} {{employee.lastName}}? 
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-danger btn-sm" (click)="deleteEmployee(employee.id)"  data-dismiss="modal">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>  -->
+
+<!-- Modal pour Liste des fermes -->
+<!-- FarmModal -->
+<div class="modal fade" id="FarmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Fermes</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <ul *ngIf="listFarms?.length; else noFarms">
+          <li *ngFor="let farm of listFarms"
+              [class.selected]="isFarmSelected(farm)"
+              (click)="toggleFarmSelection(farm)">
+            {{ farm.description }}
+          </li>
+        </ul>
+        <ng-template #noFarms>
+          <p>Aucune ferme disponible</p>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success btn-block" (click)="openGreenhouseModals()">Suivant</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal pour Liste des serres -->
+<!-- serreModal -->
+<div class="modal fade" id="serreModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Serres pour {{ selectedFarms[currentFarmIndex]?.description }}</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <ul *ngIf="ListSerres?.length; else noSerres">
+          <li *ngFor="let serre of ListSerres"
+              [class.selected]="isSerreSelected(serre, selectedFarms[currentFarmIndex]?.id)"
+              (click)="toggleSerreSelection(serre)">
+            {{ serre.description }}
+          </li>
+        </ul>
+        <ng-template #noSerres>
+          <p>Aucune serre disponible</p>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        
+        <button class="btn btn-success btn-block"  *ngIf="currentFarmIndex < selectedFarms.length - 1" (click)="nextSerreModal()">
+             Suivant
+        </button>
+
+        <button class="btn btn-success btn-block" *ngIf="currentFarmIndex === selectedFarms.length - 1 || selectedFarms.length === 0" (click)="submitSelections()">
+             Soumettre
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>

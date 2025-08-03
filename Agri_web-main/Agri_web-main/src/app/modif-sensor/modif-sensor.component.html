@@ -1,0 +1,163 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="col-dm-8">
+            <div class="header mb-3">
+                <button routerLink="/sensors" routerLinkActive="active" class="btn btn-outline-success btn-rounded">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+            </div>
+            <div class="card mb-1">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Modifier un capteur</h4>
+                </div>
+                <div class="card-body">
+                    <form #sensorForm="ngForm" id="regForm" (ngSubmit)="onSubmit()">
+
+                        <div class="sensor-selection">
+                            <div *ngFor="let sensor of availableSensors" class="sensor-card"
+                                [class.selected]="isSelected(sensor.name)" (click)="toggleSensor(sensor.name)">
+                                <div class="sensor-icon">
+                                    <i class="material-icons">{{ getSensorIcon(sensor.id) }}</i>
+                                </div>
+                                <div class="sensor-info">
+                                    <h5>{{ sensor.id }}</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paramètres de configuration du capteur sélectionné -->
+                        <div *ngIf="selectedSensors.length > 0">
+
+                            <div class="form-group">
+
+                                <!-- Description -->
+                                <div class="form-group mb-3">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" [(ngModel)]="sensor.description"
+                                       [readonly]="readOnlyMode" name="description" required />
+                                </div>
+
+                                <!-- indice -->
+                                <div class="form-group mb-3">
+                                    <label>Indice</label>
+                                    <input type="number" class="form-control" [(ngModel)]="sensor.index" name="index"
+                                      [readonly]="readOnlyMode"  required />
+                                </div>
+                                <!---Serre et ferme-->
+                                <div class="row">
+                                    <!----Select pour la ferme-->
+                                    <div class="col-md-6 mb-3">
+                                        <label>Ferme</label>
+                                        <div class="input-group">
+                                        <span class="input-group-text"><i class="material-icons">grass</i></span>
+                                        <select name="ferme" class="form-control" [(ngModel)]="selectedFarm" (ngModelChange)="changeSerre()"
+                                            [compareWith]="compareDevices" [disabled]="readOnlyMode">
+                                        <option [ngValue]="null">Aucune ferme</option> 
+                                            <option *ngFor="let ferme of ListFarms" [ngValue]="ferme">{{ ferme.description }}</option>
+                                        </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Select pour les serres -->
+                                    <div class="col-md-6 mb-3">
+                                        <label>Serre</label>
+                                        <div class="input-group">
+                                        <span class="input-group-text"><i class="material-icons">gite</i></span>
+                                        <select name="serre" class="form-control" [compareWith]="compareDevices" (ngModelChange)="changeSerre()"
+                                         [(ngModel)]="selectedSerre" [disabled]="readOnlyMode">
+                                            <option *ngIf="selectedFarm?.serres.length === 0" [ngValue]="null">Aucune serre</option>
+                                            <option *ngIf="selectedFarm?.serres?.length > 0"  [ngValue]="null">Sélectionnez une serre</option>
+                                            <option *ngFor="let serre of selectedFarm?.serres" [ngValue]="serre">{{ serre.description }}</option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                <div class="form-group mb-3">
+                                    <label>Nom de l'appareil</label>
+                                    <div class="input-group">
+                                        <select name="endDevice" class="form-control" [compareWith]="compareDevices" (change)="verifDevice()"
+                                            [(ngModel)]="sensor.endDevice" [disabled]="readOnlyMode">
+                                            <option [ngValue]="null">Aucun appareil</option>
+                                            <option *ngFor="let dev of selectedSerre?.devices" [ngValue]="dev">{{ dev.codDevice }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Seuils du jour -->
+                                <div class="row form-group mb-3">
+                                    <div class="col-md-6">
+                                        <label>Seuil d'alerte diurne</label>
+                                        <input type="number" class="form-control" [(ngModel)]="sensor.alertThersholdD"
+                                            name="alertThershold" required />
+                                    </div>
+                                    <div class="col-md-6" *ngIf="sensor.typeSensor !== 'gaz' && sensor.typeSensor !== 'lumiere'" >
+                                        <label>Seuil normal diurne</label>
+                                        <input type="number" class="form-control" [(ngModel)]="sensor.normalThersholdD"
+                                            name="normalThershold" required />
+                                    </div>
+                                </div>
+
+                                <!-- Seuils pour nuit-->
+                                <div class="row form-group mb-3" *ngIf="sensor.typeSensor =='temperature' || sensor.typeSensor =='humidite' " >
+                                    <div class="col-md-6">
+                                    <label>Seuil d'alerte nocturne</label>
+                                    <input type="number" class="form-control" [(ngModel)]="sensor.alertThersholdN" name="alertThersholdN"
+                                        required />
+                                    </div>
+                                    <div class="col-md-6">
+                                    <label>Seuil normal nocturne</label>
+                                    <input type="number" class="form-control" [(ngModel)]="sensor.normalThersholdN"
+                                        name="normalThersholdN" required />
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <div class="row">
+                                        <!-- Coordonnée Longitude -->
+                                        <div class="col-md-6 ">
+                                            <label>Coordonnée longitudinale</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="material-icons">location_on</i></span>
+                                                <input type="number" name="longt" class="form-control"
+                                                    [(ngModel)]="sensor.longt" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Coordonnée Latitude -->
+                                        <div class="col-md-6">
+                                            <label>Coordonnée de latitude</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="material-icons">location_on</i></span>
+                                                <input type="number" name="at" class="form-control"
+                                                    [(ngModel)]="sensor.lat" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <!----Boutton-------------->
+                        <div class="col-md-12 text-right mt-3">
+                            <button type="submit" [disabled]="!sensorForm.valid" class="btn btn-success btn-rounded">
+                                Soumettre
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Map pour sélection de la position -->
+        <div class="map-container mt-4">
+            <h5>Sélectionnez une position sur la carte :</h5>
+            <div id="device-map"></div>
+            <p class="mt-2">Latitude : {{ sensor.lat }} | Longitude : {{ sensor.longt }}</p>
+        </div>

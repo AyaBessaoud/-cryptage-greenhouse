@@ -1,0 +1,244 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-dm-8">
+      <div class="header mb-3">
+        <button routerLink="/devices/addDevice" routerLinkActive="active" class="btn btn-outline-danger"
+          *ngIf="role === 'Admin'">
+          <i class="material-icons">memory</i> <!-- Icône de capteur -->
+          <span class="plus-icon">+</span> <!-- Symbole "+" -->
+        </button>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Gestion des appareils</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead class="text-primary">
+                <tr>
+                  <th>Identificateur</th>
+                  <th>Serre</th>
+                  <th>Niveau de batterie</th>
+                  <th>Liste des capteurs</th>
+                  <th>Liste des actionneurs</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dev of devList">
+                  <td>{{ dev.codDevice }}</td>
+                  <td>{{ dev.serre?.description || '' }}
+                    <span *ngIf="!dev.serre?.description" class="material-icons align-middle">
+                      block
+                    </span>
+                  </td>
+                  <td>
+                    {{ (dev.nivBat / 254 * 100) | number: '1.0-0' }}%
+                    <i class="material-icons" [ngClass]="{
+                                             'text-success': dev.nivBat >= 204, 
+                                             'text-warning': dev.nivBat < 204 && dev.nivBat >= 127, 
+                                             'text-danger': dev.nivBat < 127
+                                           }" style="vertical-align: middle; margin-right: 5px;">
+                      {{ getBatteryIcon(dev.nivBat) }}
+                    </i>
+
+                  </td>
+
+                  <td>
+                    <span (click)="openSensorModal(dev)" class="sensor-count clickable">
+                      {{ dev.sensors?.length || 0 }}
+                    </span>
+                  </td>
+                  <td>
+                    <span (click)="openActModal(dev)" class="sensor-count clickable">
+                      {{ dev.localActuators?.length || 0 }}
+                    </span>
+                  </td>
+
+
+                  <td>
+                    <span class="icon config-icon" [routerLink]="['/devices/modifDevice', dev.id]"
+                      routerLinkActive="active">
+                      <i class="material-icons" [ngClass]="{'warning-icon': !dev.isConfigured}">settings</i>
+                    </span>
+                    <span class="icon view-icon" [routerLink]="['/devices/viewDevice', dev.id]"
+                      routerLinkActive="active">
+                      <i class="material-icons">visibility</i>
+                    </span>
+                    <span class="icon delete-icon" (click)="SelectDevice(dev)" *ngIf="role === 'Admin'">
+                      <i class="material-icons">delete</i>
+                    </span>
+                    <span class="icon command-icon" (click)="openCmdModal(dev)">
+                      <i class="material-icons">arrow_circle_right</i>
+                    </span>
+                    <span class="icon command-icon" (click)="openLogModal(dev)">
+                      <i class="material-icons">history</i>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal 2-->
+<div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-3" style="border-radius: 10px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">Suppression</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <p style="color: #d22346; font-size: 14px; font-weight: 500; line-height: 1.5;">
+          Voulez vous vraiment supprimer {{selectedDev.codDevice}}?
+        </p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-danger btn-sm" (click)="deleteDevice(selectedDev.id)"
+          data-dismiss="modal">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Liste des Capteurs -->
+<div class="modal fade" id="sensorModal" tabindex="-1" role="dialog" aria-labelledby="sensorModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-3" style="border-radius: 10px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" style="color:#1d1dcd !important;">
+          <i class="material-icons" style="font-size: 1.5rem; color: #1d1dcd;">info</i>
+          Détails
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <ul *ngIf="selectedDev?.sensors?.length; else noSensors">
+          <li *ngFor="let sensor of selectedDev.sensors" style=" font-size: 14px; font-weight: 300; line-height: 1.5;">
+            {{ getSensorType(sensor.typeSensor) }}
+          </li>
+        </ul>
+        <ng-template #noSensors>
+          <p>Aucun capteur disponible.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Liste des actionneurs -->
+<div class="modal fade" id="actuatorModal" tabindex="-1" role="dialog" aria-labelledby="sensorModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-3" style="border-radius: 10px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" style="color:#1d1dcd !important;">
+          <i class="material-icons" style="font-size: 1.5rem; color: #1d1dcd;">info</i>
+          Détails
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <ul *ngIf="selectedDev?.localActuators?.length; else noAct">
+          <li *ngFor="let act of selectedDev.localActuators"
+            style=" font-size: 14px; font-weight: 300; line-height: 1.5;">
+            {{ act.output }}
+          </li>
+        </ul>
+        <ng-template #noAct>
+          <p>Aucun actionneur disponible.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Liste des commandes -->
+<div class="modal fade" id="commandModal" tabindex="-1" role="dialog" aria-labelledby="sensorModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-3" style="border-radius: 10px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" style="color: rgb(29, 29, 205);">Commandes</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <ul *ngIf="cmdList?.length; else nocmd">
+          <li *ngFor="let cmd of cmdList" class="sensor-count clickable" (click)="sendCommand(cmd)"
+            style=" font-size: 14px; font-weight: 300; line-height: 1.5;">
+            {{ cmd.name }}
+          </li>
+        </ul>
+        <ng-template #nocmd>
+          <p>Aucune commande disponible.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!----Logs-->
+<div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="sensorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content p-3" style="border-radius: 10px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" style="color: rgb(29, 29, 205);">Historiques de {{codDevice}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="table-responsive" *ngIf="logs.length > 0; else noLogs">
+          <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                <th>Date</th>
+                <th>Commandes</th>
+                <th>Réponses</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of logs | paginate : {
+                  itemsPerPage: 5,
+                  currentPage: currentPage,
+                  totalItems: totalItems
+                };
+          let i = index">
+                <td>{{ log.date | date:'short' }}</td>
+                <td>{{ log.request }}</td>
+                <td>{{ log.response }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <pagination-controls (pageChange)="onPageChange($event)" previousLabel="Précédent"
+            nextLabel="Suivant" responsive="true" class="d-flex justify-content-center mt-3"></pagination-controls>
+        </div>
+
+        <ng-template #noLogs>
+          <p class="text-muted">Aucun log trouvé pour ce device.</p>
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+</div>
